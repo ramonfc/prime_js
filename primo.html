@@ -4,6 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+
+</head>
+
+<body>
+    <h1>Prime Number?</h1>
+    Number to validate: <input id="number" placeholder="Enter a number"><br> <br>
+    <button id="myBtn" onclick="prime_and_factor_deco()">is prime?</button><br>
+    <strong><div id="answer"></div></strong>
+    <strong><div id="answer2"></div></strong>
+
     <script>
         //implementation of something similar to range function in python
         function range(start, stop, step) {
@@ -143,8 +153,6 @@
             return final_factors
         }
 
-
-
         //main function 
         function prime_and_factor_deco() {
             //get a number
@@ -156,11 +164,11 @@
             let message2 //string to show de decomposition on prime factors in a message
                 //if it's not a number:
             if (isNaN(num)) {
-                answer = "Debe ingresar un número válido"
+                answer = "It must be a valid number"
                 message2 = ""
             } else {
 
-                answer = isPrime(num) ? num + " es primo" : num + " NO es primo"
+                answer = isPrime(num) ? num + " is prime" : num + " is NOT prime"
                 factores = getPrimeFactors(num)
                     //Give a pretty presentation: first sort and after write as string separated by x:
                 factores.sort(function(a, b) {
@@ -169,22 +177,23 @@
                 factores = factores.join("x")
 
 
-                message2 = `descomposición del ${num} en factores primos: ` + factores
+                message2 = `Decomposition of ${num} into prime factors: ` + factores
 
             }
             let message = "<br>" + answer
             document.getElementById('answer').innerHTML = message
             document.getElementById('answer2').innerHTML = message2
-        }
-    </script>
-</head>
 
-<body>
-    <h1>Número Primo?</h1>
-    Número a validar: <input type="text" id="number"><br> <br>
-    <button type="button" onclick="prime_and_factor_deco()">primo?</button><br>
-    <strong><div id="answer"></div></strong>
-    <strong><div id="answer2"></div></strong>
+        }
+        //enter button event
+        let input = document.getElementById('number')
+        input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("myBtn").click();
+            }
+        });
+    </script>
 </body>
 
 </html>
