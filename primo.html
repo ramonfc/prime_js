@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script>
+        //implementation of something similar to range function in python
+        function range(start, stop, step) {
+            if (typeof stop == 'undefined') {
+                // one param defined
+                stop = start;
+                start = 0;
+            }
+
+            if (typeof step == 'undefined') {
+                step = 1;
+            }
+
+            if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
+                return [];
+            }
+
+            var result = [];
+
+            for (var i = start; step > 0 ? i < stop : i > stop; i += step) {
+                result.push(i);
+            }
+
+            return result;
+        };
+
+        /* function to determine if a number is prime
+    INPUT:
+		a whole number
+	returns:
+		the input number if it is prime
+        false if the number is not prime
+        */
+        function isPrime(num) {
+            let divisor = 1
+            let counter = 0 // count the times that a division has a module 0, meaning that is divisible
+                //by divisor
+            let answer
+            if (num == 1) // 1 is not considered a prime
+                answer = false
+            else {
+                //a prime number is only divisible by itself and by one 
+                while (divisor <= num) {
+                    if (num % divisor == 0) { //if it's divisible then...
+                        counter += 1 //increase the counter of amount of times that is divisible
+                    }
+                    divisor += 1 //next divisor
+                }
+
+                // if there are only two possible divisors then the input number is a prime number
+                answer = counter == 2 ? num : false
+            }
+            return answer
+        }
+
+        /*
+    This function creates a list of prime numbers in the range between 2 (first prime) and a whole number.    
+	INPUT:
+		a whole number
+	returns:
+		A list with a range of prime numbers
+        (In case that input number is 1, the output is an array with only number 1)
+	*/
+        function list_primes(number) {
+
+            let list_p = [] // list with the prime numbers
+
+            if (number == 1) //as 1 isn't prime, simply return it
+                list_p.push(number)
+
+            else {
+                let numbers = range(2, number) //list of numbers between 2 and the input number
+                for (let x = 0; x < numbers.length; x++) {
+                    if (isPrime(numbers[x]) != false) //if the iterated number is prime then add to the list
+                        list_p.push(numbers[x])
+                }
+            }
+            return list_p
+        }
+
+        /*
+        This function determines if a whole number is divisible by some prime from the list of primes
+
+    INPUT:
+		a whole number
+	returns:
+		A list for the prime divisors of the input number
+        */
+        function divisiblesByPrimes(whole_number) {
+
+            let primes_array = list_primes(whole_number) //getting a list of primes
+
+            let factors = [] //list for the prime divisors of the input number
+
+            for (let i = 0; i < primes_array.length; i++) {
+                if (whole_number % primes_array[i] == 0) //if divisible add to the list
+                    factors.push(primes_array[i])
+            }
+
+            return factors
+        }
+
+        /*
+                This function processes the prime factor decomposition  of a whole number
+            INPUT:
+        		a whole number
+        	returns:
+        		A string with a formated list with the decomposition 
+
+        */
+
+        function getPrimeFactors(num) {
+            let final_factors = [] //list with the decomposition 
+            let prime_divisors = [] //prime divisor of the input number
+
+            let prime //to eval if the number is prime
+
+            if (num == 1) //if input number is 1 return an array with 1
+                final_factors = [1]
+            else {
+                while (true) {
+                    prime = isPrime(num) //descovering if the number is prime
+                    if (prime != false) { //if is prime then add to the final list. Finish the loop
+                        final_factors.push(prime)
+                        break
+                    } else {
+                        prime_divisors = divisiblesByPrimes(num)
+
+                        final_factors.push(prime_divisors[prime_divisors.length - 1]) //put in the list the last divisor
+                        num = parseInt(num / prime_divisors[prime_divisors.length - 1]) //divide the number by the last divisor
+                            //and assign it to the number for continue
+                            //searching the other prime factors in the
+                            //decomposition
+                    }
+                }
+            }
+            return final_factors
+        }
+
+
+
+        //main function 
+        function prime_and_factor_deco() {
+            //get a number
+            let num = parseInt(document.getElementById('number').value.trim())
+
+
+            let answer = "" //it says if the input number is prime
+            let factores = [] //it contains the prime decomposition factors
+            let message2 //string to show de decomposition on prime factors in a message
+                //if it's not a number:
+            if (isNaN(num)) {
+                answer = "Debe ingresar un número válido"
+                message2 = ""
+            } else {
+
+                answer = isPrime(num) ? num + " es primo" : num + " NO es primo"
+                factores = getPrimeFactors(num)
+                    //Give a pretty presentation: first sort and after write as string separated by x:
+                factores.sort(function(a, b) {
+                    return a - b
+                })
+                factores = factores.join("x")
+
+
+                message2 = `descomposición del ${num} en factores primos: ` + factores
+
+            }
+            let message = "<br>" + answer
+            document.getElementById('answer').innerHTML = message
+            document.getElementById('answer2').innerHTML = message2
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Número Primo?</h1>
+    Número a validar: <input type="text" id="number"><br> <br>
+    <button type="button" onclick="prime_and_factor_deco()">primo?</button><br>
+    <strong><div id="answer"></div></strong>
+    <strong><div id="answer2"></div></strong>
+</body>
+
+</html>
